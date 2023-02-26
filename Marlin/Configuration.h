@@ -23,6 +23,8 @@
 
 #define CONFIG_EXAMPLES_DIR "Elegoo/Neptune 2"
 
+//https://github.com/just-trey/Marlin/tree/elegoo-neptune-2/config/Elegoo/Neptune-2
+
 /**
  * Configuration.h
  *
@@ -49,6 +51,9 @@
 //#define IS_BMG                  // Enable for installed BMG-like extruder
 //#define USB_MOD                 // Enable if you've applied the Native USB mods (see README.md)
 #define FIRMWARE_BIN elegoo.bin   // Override the firmware binary output filename
+#define MT_DET_PIN_STATE        LOW
+// Set dark background color for higher contrast.
+#define COLOR_BACKGROUND        COLOR_DARK
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -272,9 +277,9 @@
 
 // Save and restore temperature and fan speed on tool-change.
 // Set standby for the unselected tool with M104/106/109 T...
-#if ENABLED(SINGLENOZZLE)
-  //#define SINGLENOZZLE_STANDBY_TEMP
-  //#define SINGLENOZZLE_STANDBY_FAN
+#ifdef SINGLENOZZLE
+  #define SINGLENOZZLE_STANDBY_TEMP
+  #define SINGLENOZZLE_STANDBY_FAN
 #endif
 
 // @section multi-material
