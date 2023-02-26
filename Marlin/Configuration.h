@@ -1392,10 +1392,12 @@
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
-//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+
+// BL-Touch
+#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 // Force the use of the probe for Z-axis homing
-//#define USE_PROBE_FOR_Z_HOMING
+#define USE_PROBE_FOR_Z_HOMING
 
 /**
  * Z_MIN_PROBE_PIN
@@ -1412,7 +1414,7 @@
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
  */
-#define Z_MIN_PROBE_PIN Z_MAX_PIN // Z-MAX PIN FOR BOARD
+#define Z_MIN_PROBE_PIN PC4  //Z_MAX_PIN // Z-MAX PIN FOR BOARD // PC4??
 
 /**
  * Probe Type
@@ -1449,7 +1451,7 @@
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
-//#define BLTOUCH
+#define BLTOUCH
 
 /**
  * MagLev V4 probe by MDD
@@ -1457,7 +1459,7 @@
  * This probe is deployed and activated by powering a built-in electromagnet.
  */
 //#define MAGLEV4
-#if ENABLED(MAGLEV4)
+#ifdef MAGLEV4
   //#define MAGLEV_TRIGGER_PIN 11     // Set to the connected digital output
   #define MAGLEV_TRIGGER_DELAY 15     // Changing this risks overheating the coil
 #endif
@@ -1694,7 +1696,7 @@
 
 // Before deploy/stow pause for user confirmation
 //#define PAUSE_BEFORE_DEPLOY_STOW
-#if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
+#ifdef PAUSE_BEFORE_DEPLOY_STOW
   //#define PAUSE_PROBE_DEPLOY_WHEN_TRIGGERED // For Manual Deploy Allenkey Probe
 #endif
 
@@ -1706,7 +1708,7 @@
  * readings with inductive probes and piezo sensors.
  */
 //#define PROBING_HEATERS_OFF       // Turn heaters off when probing
-#if ENABLED(PROBING_HEATERS_OFF)
+#ifdef PROBING_HEATERS_OFF
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
   //#define WAIT_FOR_HOTEND         // Wait for hotend to heat back up between probes (to improve accuracy & prevent cold extrude)
 #endif
@@ -1717,7 +1719,7 @@
 
 // Require minimum nozzle and/or bed temperature for probing
 //#define PREHEAT_BEFORE_PROBING
-#if ENABLED(PREHEAT_BEFORE_PROBING)
+#ifdef PREHEAT_BEFORE_PROBING
   #define PROBING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
   #define PROBING_BED_TEMP     50
 #endif
@@ -1846,7 +1848,7 @@
 
 // Min software endstops constrain movement within minimum coordinate bounds
 #define MIN_SOFTWARE_ENDSTOPS
-#if ENABLED(MIN_SOFTWARE_ENDSTOPS)
+#ifdef MIN_SOFTWARE_ENDSTOPS
   #define MIN_SOFTWARE_ENDSTOP_X
   #define MIN_SOFTWARE_ENDSTOP_Y
   #define MIN_SOFTWARE_ENDSTOP_Z
@@ -1860,7 +1862,7 @@
 
 // Max software endstops constrain movement within maximum coordinate bounds
 #define MAX_SOFTWARE_ENDSTOPS
-#if ENABLED(MAX_SOFTWARE_ENDSTOPS)
+#ifdef MAX_SOFTWARE_ENDSTOPS
   #define MAX_SOFTWARE_ENDSTOP_X
   #define MAX_SOFTWARE_ENDSTOP_Y
   #define MAX_SOFTWARE_ENDSTOP_Z
@@ -1872,7 +1874,7 @@
   #define MAX_SOFTWARE_ENDSTOP_W
 #endif
 
-#if EITHER(MIN_SOFTWARE_ENDSTOPS, MAX_SOFTWARE_ENDSTOPS)
+#if defined(MIN_SOFTWARE_ENDSTOPS) || defined(MAX_SOFTWARE_ENDSTOPS)
   #define SOFT_ENDSTOPS_MENU_ITEM    // Enable/Disable software endstops from the LCD
 #endif
 
@@ -1889,8 +1891,8 @@
  * RAMPS-based boards use SERVO3_PIN for the first runout sensor.
  * For other boards you may need to define FIL_RUNOUT_PIN, FIL_RUNOUT2_PIN, etc.
  */
-#define FILAMENT_RUNOUT_SENSOR
-#if ENABLED(FILAMENT_RUNOUT_SENSOR)
+// #define FILAMENT_RUNOUT_SENSOR //raus der kram
+#ifdef FILAMENT_RUNOUT_SENSOR
   #ifdef IS_BMG
     #define FIL_RUNOUT_ENABLED_DEFAULT false // Enable the sensor on startup. Override with M412 followed by M500.
   #else
@@ -2018,10 +2020,10 @@
 /**
  * Auto-leveling needs preheating
  */
-//#define PREHEAT_BEFORE_LEVELING
-#if ENABLED(PREHEAT_BEFORE_LEVELING)
-  #define LEVELING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
-  #define LEVELING_BED_TEMP     50
+#define PREHEAT_BEFORE_LEVELING
+#ifdef PREHEAT_BEFORE_LEVELING
+  //#define LEVELING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
+  #define LEVELING_BED_TEMP     60
 #endif
 
 /**
@@ -2040,19 +2042,19 @@
  */
 //#define DEBUG_LEVELING_FEATURE
 
-#if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL, PROBE_MANUALLY)
+#if defined(MESH_BED_LEVELING) || defined(AUTO_BED_LEVELING_UBL) || defined(PROBE_MANUALLY)
   // Set a height for the start of manual adjustment
   #define MANUAL_PROBE_START_Z 0.2  // (mm) Comment out to use the last-measured height
 #endif
 
-#if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR, AUTO_BED_LEVELING_UBL)
+#if defined(MESH_BED_LEVELING) || defined(AUTO_BED_LEVELING_BILINEAR) ||  defined(AUTO_BED_LEVELING_UBL)
   /**
    * Gradually reduce leveling correction until a set height is reached,
    * at which point movement will be level to the machine's XY plane.
    * The height can be set with M420 Z<height>
    */
   #define ENABLE_LEVELING_FADE_HEIGHT
-  #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
+  #ifdef ENABLE_LEVELING_FADE_HEIGHT
     #define DEFAULT_LEVELING_FADE_HEIGHT 10.0 // (mm) Default fade height.
   #endif
 
@@ -2074,7 +2076,7 @@
    * Enable the G26 Mesh Validation Pattern tool.
    */
   //#define G26_MESH_VALIDATION
-  #if ENABLED(G26_MESH_VALIDATION)
+  #ifdef G26_MESH_VALIDATION
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for G26.
     #define MESH_TEST_HOTEND_TEMP  205    // (°C) Default nozzle temperature for G26.
@@ -2086,7 +2088,7 @@
 
 #endif
 
-#if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
+#if defined(AUTO_BED_LEVELING_LINEAR) || defined(AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
   #define GRID_MAX_POINTS_X 3
@@ -2095,7 +2097,7 @@
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
 
-  #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+  #ifdef AUTO_BED_LEVELING_BILINEAR
 
     // Beyond the probed grid, continue the implied tilt?
     // Default is to maintain the height of the nearest edge.
@@ -2106,14 +2108,15 @@
     // Synthesizes intermediate points to produce a more detailed mesh.
     //
     //#define ABL_BILINEAR_SUBDIVISION
-    #if ENABLED(ABL_BILINEAR_SUBDIVISION)
+    #ifdef ABL_BILINEAR_SUBDIVISION
       // Number of subdivisions between probe points
       #define BILINEAR_SUBDIVISIONS 3
     #endif
 
   #endif
+#endif
 
-#elif ENABLED(AUTO_BED_LEVELING_UBL)
+#ifdef AUTO_BED_LEVELING_UBL
 
   //===========================================================================
   //========================= Unified Bed Leveling ============================
@@ -2139,7 +2142,7 @@
    * Probing not allowed within the position of an obstacle.
    */
   //#define AVOID_OBSTACLES
-  #if ENABLED(AVOID_OBSTACLES)
+  #ifdef AVOID_OBSTACLES
     #define CLIP_W  23  // Bed clip width, should be padded a few mm over its physical size
     #define CLIP_H  14  // Bed clip height, should be padded a few mm over its physical size
 
@@ -2153,8 +2156,8 @@
     // only used to compute a linear transformation for the mesh itself.
     #define G29J_MESH_TILT_MARGIN ((CLIP_H) + 1)
   #endif
-
-#elif ENABLED(MESH_BED_LEVELING)
+#endif
+#ifdef MESH_BED_LEVELING
 
   //===========================================================================
   //=================================== Mesh ==================================
@@ -2174,7 +2177,7 @@
  */
 #define LCD_BED_LEVELING
 
-#if ENABLED(LCD_BED_LEVELING)
+#ifdef LCD_BED_LEVELING
   #define MESH_EDIT_Z_STEP  0.025 // (mm) Step size while manually probing Z axis.
   #define LCD_PROBE_Z_RANGE 4     // (mm) Z Range centered on Z_MIN_POS for LCD Z adjustment
   //#define MESH_EDIT_MENU        // Add a menu to edit mesh points
@@ -2183,13 +2186,13 @@
 // Add a menu item to move between bed corners for manual bed adjustment
 #define LCD_BED_TRAMMING
 
-#if ENABLED(LCD_BED_TRAMMING)
+#ifdef LCD_BED_TRAMMING
   #define BED_TRAMMING_INSET_LFRB { 33, 33, 33, 33 } // (mm) Left, Front, Right, Back insets
   #define BED_TRAMMING_HEIGHT      0.2        // (mm) Z height of nozzle at leveling points
   #define BED_TRAMMING_Z_HOP       2          // (mm) Z height of nozzle between leveling points
   #define BED_TRAMMING_INCLUDE_CENTER         // Move to the center after the last corner
   //#define BED_TRAMMING_USE_PROBE
-  #if ENABLED(BED_TRAMMING_USE_PROBE)
+  #ifdef BED_TRAMMING_USE_PROBE
     #define BED_TRAMMING_PROBE_TOLERANCE 0.1  // (mm)
     #define BED_TRAMMING_VERIFY_RAISED        // After adjustment triggers the probe, re-probe to verify
     //#define BED_TRAMMING_AUDIO_FEEDBACK
@@ -2245,11 +2248,11 @@
  * - Allows Z homing only when XY positions are known and trusted.
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
-#if ENABLED(BLTOUCH)
+#ifdef BLTOUCH
   #define Z_SAFE_HOMING
 #endif
 
-#if ENABLED(Z_SAFE_HOMING)
+#ifdef Z_SAFE_HOMING
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
 #endif
@@ -2292,7 +2295,7 @@
  */
 //#define SKEW_CORRECTION
 
-#if ENABLED(SKEW_CORRECTION)
+#ifdef SKEW_CORRECTION
   // Input all length measurements here:
   #define XY_DIAG_AC 282.8427124746
   #define XY_DIAG_BD 282.8427124746
@@ -2337,7 +2340,7 @@
 //#define DISABLE_M503        // Saves ~2700 bytes of flash. Disable for release!
 #define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
 #define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
-#if ENABLED(EEPROM_SETTINGS)
+#ifdef EEPROM_SETTINGS
   //#define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
   #define EEPROM_INIT_NOW     // Init EEPROM on first boot after a new build.
 #endif
@@ -2404,7 +2407,7 @@
  */
 #define NOZZLE_PARK_FEATURE
 
-#if ENABLED(NOZZLE_PARK_FEATURE)
+#ifdef NOZZLE_PARK_FEATURE
   // Specify a park position as { X, Y, Z_raise }
   #define NOZZLE_PARK_POINT { 0, 113, 5 }
   #define NOZZLE_PARK_MOVE          0   // Park motion: 0 = XY Move, 1 = X Only, 2 = Y Only, 3 = X before Y, 4 = Y before X
@@ -2451,7 +2454,7 @@
  */
 //#define NOZZLE_CLEAN_FEATURE
 
-#if ENABLED(NOZZLE_CLEAN_FEATURE)
+#ifdef NOZZLE_CLEAN_FEATURE
   // Default number of pattern repetitions
   #define NOZZLE_CLEAN_STROKES  12
 
@@ -2530,9 +2533,9 @@
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
-#if ENABLED(PRINTCOUNTER)
-  #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print. A value of 0 will save stats at end of print.
+#define PRINTCOUNTER
+#ifdef PRINTCOUNTER
+  #define PRINTCOUNTER_SAVE_INTERVAL 0 // (minutes) EEPROM save interval during print. A value of 0 will save stats at end of print.
 #endif
 
 // @section security
@@ -2557,7 +2560,7 @@
  * re-flash the firmware again with this feature enabled.
  */
 //#define PASSWORD_FEATURE
-#if ENABLED(PASSWORD_FEATURE)
+#ifdef PASSWORD_FEATURE
   #define PASSWORD_LENGTH 4                 // (#) Number of digits (1-9). 3 or 4 is recommended
   #define PASSWORD_ON_STARTUP
   #define PASSWORD_UNLOCK_GCODE             // Unlock with the M511 P<password> command. Disable to prevent brute-force attack.
@@ -2694,7 +2697,7 @@
 // This option increases encoder samples to filter out phantom encoder clicks caused by EMI noise.
 //
 //#define ENCODER_NOISE_FILTER
-#if ENABLED(ENCODER_NOISE_FILTER)
+#ifdef ENCODER_NOISE_FILTER
   #define ENCODER_SAMPLES 10
 #endif
 
@@ -3049,7 +3052,7 @@
 // SAV OLEd LCD module support using either SSD1306 or SH1106 based LCD modules
 //
 //#define SAV_3DGLCD
-#if ENABLED(SAV_3DGLCD)
+#ifdef SAV_3DGLCD
   #define U8GLIB_SSD1306
   //#define U8GLIB_SH1106
 #endif
